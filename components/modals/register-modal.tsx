@@ -2,17 +2,20 @@
 
 import axios from 'axios'
 import { AiFillGithub } from 'react-icons/ai'
+import { signIn } from 'next-auth/react'
 import { FcGoogle } from 'react-icons/fc'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import useRegisterModal from '@/hooks/use-register-modal'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import toast from 'react-hot-toast'
 import Modal from '@/components/modals/modal'
 import Button from '@/components/button'
 import Heading from '@/components/heading'
 import Input from '@/components/inputs/input'
+import useLoginModal from '@/hooks/use-login-modal'
 
 const RegisterModal = () => {
+  const loginModal = useLoginModal()
   const registerModal = useRegisterModal()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -36,6 +39,7 @@ const RegisterModal = () => {
       .then(() => {
         toast.success('Registered!')
         registerModal.onClose()
+        loginModal.onOpen()
       })
       .catch((error) => {
         toast.error(error)
@@ -44,6 +48,11 @@ const RegisterModal = () => {
         setIsLoading(false)
       })
   }
+
+  const onToggle = useCallback(() => {
+    registerModal.onClose()
+    loginModal.onOpen()
+  }, [registerModal, loginModal])
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -57,17 +66,17 @@ const RegisterModal = () => {
         required
       />
       <Input
-        id='name'
-        label='Name'
+        id="name"
+        label="Name"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
       <Input
-        id='password'
-        label='Password'
-        type='password'
+        id="password"
+        label="Password"
+        type="password"
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -83,18 +92,21 @@ const RegisterModal = () => {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={() => console.log('sign in with google')}
+        onClick={() => signIn('google')}
       />
       <Button
         outline
         label="Continue with Github"
         icon={AiFillGithub}
-        onClick={() => console.log('sign in with github')}
+        onClick={() => signIn('github')}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <p>
           Already have an account?{' '}
-          <span className="text-neutral-800 cursor-pointer hover:underline">
+          <span
+            onClick={onToggle}
+            className="text-neutral-800 cursor-pointer hover:underline"
+          >
             Log in
           </span>{' '}
         </p>

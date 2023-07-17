@@ -6,11 +6,13 @@ import Avatar from '../avatar'
 import MenuItem from '@/components/navbar/menu-item'
 import { useRouter } from 'next/navigation'
 import useRegisterModal from '@/hooks/use-register-modal'
+import useLoginModal from '@/hooks/use-login-modal'
 
 const UserMenu = () => {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const registerModal = useRegisterModal()
+  const loginModal = useLoginModal()
 
   // Temporary
   const currentUser = null
@@ -62,15 +64,11 @@ const UserMenu = () => {
                   onClick={() => router.push('/properties')}
                 />
                 <hr />
-                <MenuItem
-                  label="Logout"
-                  onClick={() => {}}
-                />
-
+                <MenuItem label="Logout" onClick={() => {}} />
               </>
             ) : (
               <>
-                <MenuItem label="Login" onClick={() => {}} />
+                <MenuItem label="Login" onClick={loginModal.onOpen} />
                 <MenuItem label="Sign up" onClick={registerModal.onOpen} />
               </>
             )}
