@@ -5,15 +5,15 @@ import { AiOutlineMenu } from 'react-icons/ai'
 import Avatar from '../avatar'
 import MenuItem from '@/components/navbar/menu-item'
 import { useRouter } from 'next/navigation'
+import useRegisterModal from '@/hooks/use-register-modal'
 
 const UserMenu = () => {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const registerModal = useRegisterModal()
 
   // Temporary
-  const currentUser = {
-    image: null,
-  }
+  const currentUser = null
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
@@ -71,7 +71,7 @@ const UserMenu = () => {
             ) : (
               <>
                 <MenuItem label="Login" onClick={() => {}} />
-                <MenuItem label="Sign up" onClick={() => {}} />
+                <MenuItem label="Sign up" onClick={registerModal.onOpen} />
               </>
             )}
           </div>
