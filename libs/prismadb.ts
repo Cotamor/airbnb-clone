@@ -6,7 +6,7 @@ declare global {
 }
 
 // nextjs hot reload creates bunch of new PrismaClient, this will avoid it while development
-const client = globalThis.prisma || new PrismaClient()
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = client
+const prismadb = globalThis.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = prismadb
 
-export default client
+export default prismadb

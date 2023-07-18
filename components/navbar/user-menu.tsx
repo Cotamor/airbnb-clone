@@ -7,15 +7,22 @@ import MenuItem from '@/components/navbar/menu-item'
 import { useRouter } from 'next/navigation'
 import useRegisterModal from '@/hooks/use-register-modal'
 import useLoginModal from '@/hooks/use-login-modal'
+import { SafeUser } from '@/types'
+import { signOut } from 'next-auth/react'
 
-const UserMenu = () => {
+interface UserMenuProps {
+  currentUser?: SafeUser | null
+}
+
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const registerModal = useRegisterModal()
   const loginModal = useLoginModal()
+  console.log(currentUser)
 
   // Temporary
-  const currentUser = null
+  // const currentUser = null
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
@@ -49,7 +56,10 @@ const UserMenu = () => {
               <>
                 <MenuItem
                   label="My trips"
-                  onClick={() => router.push('/trips')}
+                  onClick={() => {
+                    router.push('/trips')
+                    toggleOpen()
+                  }}
                 />
                 <MenuItem
                   label="My favorites"
@@ -64,7 +74,7 @@ const UserMenu = () => {
                   onClick={() => router.push('/properties')}
                 />
                 <hr />
-                <MenuItem label="Logout" onClick={() => {}} />
+                <MenuItem label="Logout" onClick={() => signOut()} />
               </>
             ) : (
               <>

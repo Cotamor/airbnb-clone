@@ -1,11 +1,11 @@
+import LoginModal from '@/components/modals/login-modal'
+import RegisterModal from '@/components/modals/register-modal'
 import Navbar from '@/components/navbar/navbar'
-import './globals.css'
+import { ToasterProvider } from '@/providers/toaster-provider'
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
-import Modal from '@/components/modals/modal'
-import RegisterModal from '@/components/modals/register-modal'
-import { ToastProvider } from '@/providers/toast-provider'
-import LoginModal from '@/components/modals/login-modal'
+import './globals.css'
+import getCurrentUser from '@/actions/get-current-user'
 
 const font = Nunito({ subsets: ['latin'] })
 
@@ -14,25 +14,21 @@ export const metadata: Metadata = {
   description: 'Airbnb Clone',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
 
-  const onClose = ()=> {
-    console.log('close')
-  }
-  const onSubmit = ()=> {
-    console.log('submit')
-  }
+  const currentUser = await getCurrentUser()
+  
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToastProvider />
+        <ToasterProvider />
         <RegisterModal />
         <LoginModal />
-        <Navbar />
+        <Navbar currentUser={currentUser} />
         {children}
         </body>
     </html>
