@@ -1,5 +1,6 @@
 import LoginModal from '@/components/modals/login-modal'
 import RegisterModal from '@/components/modals/register-modal'
+import RentModal from '@/components/modals/rent-modal'
 import Navbar from '@/components/navbar/navbar'
 import { ToasterProvider } from '@/providers/toaster-provider'
 import type { Metadata } from 'next'
@@ -28,6 +29,7 @@ export default async function RootLayout({
         <ToasterProvider />
         <RegisterModal />
         <LoginModal />
+        <RentModal />
         <Navbar currentUser={currentUser} />
         {children}
         </body>
