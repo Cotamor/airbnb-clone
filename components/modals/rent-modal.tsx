@@ -1,13 +1,15 @@
 'use client'
 
+import Heading from '@/components/heading'
+import CategoryInput from '@/components/inputs/category-input'
+import Modal from '@/components/modals/modal'
+import { categories } from '@/components/navbar/categories'
 import useRentModal from '@/hooks/use-rent-modal'
+import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import Modal from '@/components/modals/modal'
-import { useRouter } from 'next/navigation'
-import Heading from '@/components/heading'
-import { categories } from '@/components/navbar/categories'
-import CategoryInput from '@/components/inputs/category-input'
+import CountrySelect from '../inputs/country-select'
+import dynamic from 'next/dynamic'
 
 enum STEPS {
   CATEGORY = 0,
@@ -51,6 +53,11 @@ const RentModal = () => {
   const roomCount = watch('roomCount')
   const bathroomCount = watch('bathroomCount')
   const imageSrc = watch('imageSrc')
+
+  const Map = useMemo(
+    () => dynamic(() => import('@/components/map'), { ssr: false }),
+    [location]
+  )
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -130,7 +137,11 @@ const RentModal = () => {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
-        country select
+        <CountrySelect
+          value={location}
+          onChange={(value) => setCustomValue('location', value)}
+        />
+        <Map center={location?.latlng} />
       </div>
     )
   }
