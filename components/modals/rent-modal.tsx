@@ -6,12 +6,15 @@ import Modal from '@/components/modals/modal'
 import { categories } from '@/components/navbar/categories'
 import useRentModal from '@/hooks/use-rent-modal'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import CountrySelect from '../inputs/country-select'
 import dynamic from 'next/dynamic'
 import Counter from '@/components/inputs/counter'
 import ImageUpload from '../inputs/image-upload'
+import Input from '../inputs/input'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 enum STEPS {
   CATEGORY = 0,
@@ -35,6 +38,7 @@ const RentModal = () => {
     setValue,
     watch,
     formState: { errors },
+    reset,
   } = useForm<FieldValues>({
     defaultValues: {
       category: '',
@@ -43,7 +47,7 @@ const RentModal = () => {
       roomCount: 1,
       bathroomCount: 1,
       imageSrc: '',
-      price: 1,
+      price: 1000,
       title: '',
       description: '',
     },
@@ -78,14 +82,32 @@ const RentModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     if (step !== STEPS.PRICE) {
-      console.log(data)
       return onNext()
     }
-
+    
     setIsLoading(true)
-
-    console.log('create listing')
+    console.log(data)
+    axios.post('/api/listings', data)
+      .then(() => {
+        toast.success('Listing created!')
+        router.refresh()
+        reset()
+        setStep(STEPS.CATEGORY)
+        rentModal.onClose()
+      })
+      .catch(() => {
+        toast.error('Something went wrong')
+      })
+      .finally(()=>{
+        setIsLoading(false)
+      });
   }
+
+  const cancel = useCallback(()=>{
+    reset()
+    setStep(STEPS.CATEGORY)
+    rentModal.onClose()
+  },[rentModal, reset])
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
@@ -192,12 +214,60 @@ const RentModal = () => {
     )
   }
 
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="How would you describe your place?"
+          subtitle="Short and sweet works best!"
+        />
+        <Input
+          id="title"
+          label="Title"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <hr />
+        <Input
+          id="description"
+          label="Description"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set your price"
+          subtitle="How much do you charge per night?"
+        />
+        <Input
+          id='price'
+          label='Price'
+          formatPrice
+          type='number'
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
 
   return (
     <Modal
       disabled={isLoading}
       isOpen={rentModal.isOpen}
-      onClose={rentModal.onClose}
+      onClose={cancel}
       title="Airbnb your home"
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
