@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import getCurrentUser from '@/actions/get-current-user'
+import ClientOnly from '@/components/client-only'
 
 const font = Nunito({ subsets: ['latin'] })
 
@@ -20,19 +21,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   const currentUser = await getCurrentUser()
-  
+
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToasterProvider />
-        <RegisterModal />
-        <LoginModal />
-        <RentModal />
-        <Navbar currentUser={currentUser} />
-        {children}
-        </body>
+        <ClientOnly>
+          <ToasterProvider />
+          <RegisterModal />
+          <LoginModal />
+          <RentModal />
+          <Navbar currentUser={currentUser} />
+        </ClientOnly>
+        <div className="pb-20 pt-28">{children}</div>
+      </body>
     </html>
   )
 }
