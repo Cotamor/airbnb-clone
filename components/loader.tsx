@@ -1,9 +1,11 @@
 'use client'
 
-import { PuffLoader } from "react-spinners"
+import { PuffLoader } from 'react-spinners'
 
 export const Loader = () => {
   return (
-    <PuffLoader color="red" size={100} />
+    <div className="h-[70vh] flex flex-col justify-center items-center">
+      <PuffLoader color="purple" size={100} />
+    </div>
   )
 }
