@@ -6,11 +6,12 @@ import ListingInfo from '@/components/listings/listing-info'
 import ListingReservation from '@/components/listings/listing-reservation'
 import { categories } from '@/components/navbar/categories'
 import useLoginModal from '@/hooks/use-login-modal'
-import { SafeListing, SafeUser } from '@/types'
-import { Reservation } from '@prisma/client'
+import { SafeListing, SafeReservation, SafeUser } from '@/types'
 import axios from 'axios'
 // It might work better with "differenceInCalendarDays" instead
-import { differenceInDays, eachDayOfInterval, setDate } from 'date-fns'
+// import { differenceInDays, eachDayOfInterval, setDate } from 'date-fns'
+import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns'
+
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Range } from 'react-date-range'
@@ -23,7 +24,7 @@ const initialDateRange = {
 }
 
 interface ListingClientProps {
-  reservations?: Reservation[]
+  reservations?: SafeReservation[]
   listing: SafeListing & {
     user: SafeUser
   }
@@ -88,7 +89,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
   useEffect(()=>{
     if(dateRange.startDate && dateRange.endDate) {
-      const dayCount = differenceInDays(
+      const dayCount = differenceInCalendarDays(
         dateRange.endDate,
         dateRange.startDate
       )
