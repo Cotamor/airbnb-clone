@@ -33,7 +33,7 @@ export default async function getListings(params: IListingsParams) {
     if (category) {
       query.category = category
     }
-
+    // + plub sign transform roomCount as string into as definit number
     if (roomCount) {
       query.roomCount = {
         gte: +roomCount,
@@ -53,7 +53,7 @@ export default async function getListings(params: IListingsParams) {
     if (locationValue) {
       query.locationValue = locationValue
     }
-
+    // NOT:reverse query
     if (startDate && endDate) {
       query.NOT = {
         reservations: {
