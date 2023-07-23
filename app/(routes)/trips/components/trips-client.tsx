@@ -37,7 +37,7 @@ const TripsClient:React.FC<TripsClientProps> = ({
     .finally(()=>{
       setDeleteId('')
     })
-  },[])
+  },[router])
 
 
   return (
